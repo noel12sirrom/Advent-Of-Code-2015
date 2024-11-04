@@ -1,39 +1,32 @@
-import re 
+import re, math
 
 with open('2023/day2/data.txt', 'r')as games:
     games = games.read().split("\n")
 
-    sum= 0
-    
-print("start--")
-    
-for i in games:
+sum= 0
 
-    i = re.sub(r"Game (\d+): ",  "", i)
-    draws = i.split(";")#each individual draw
+for i in games:
+    max = {"red": 0, "green": 0, "blue": 0}
+    gameNum, game = i.split(":")
+    draws = game.split(";")#each individual draw
     
-    #populates inp with  
+    print(f"\n\n{gameNum}")
+    
     for j in draws: 
         inp = {"red": 0, "green": 0, "blue": 0}
-        print(j, end=" | ")
-        print()
-            
+        
+        #populates inp and checks it against max  
         for color in max:
             inp[color] = int(re.search(rf"(\d+) {color}",j).group(1)) if re.search(rf"(\d+) {color}",j) else 0
-            
             print(inp)
-            print(color)
             if max[color] < inp[color]:
-                print(f"max({max[color]}) < inp({inp[color]})", end = "\n\n")
-                addGameNum = False
-                break
+                print(f"{color}: max({max[color]}) < draw({inp[color]})", end = "\n\n")
+                max[color] = inp[color]
             else:
-                print(f"max({max[color]}) > inp({inp[color]})", end = "\n\n")
+                print(f"{color}: max({max[color]}) > draw({inp[color]})", end = "\n\n")
          
-    if addGameNum:
-        print(f"+{gameNum}")
-        print()
-        sumOfId += gameNum            
-            
-print(sumOfId)
+    power = math.prod(max.values())
+    sum += power 
+                       
+print(f"Sum = {sum}")
     
