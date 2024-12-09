@@ -1,9 +1,9 @@
 data = open("day3/data.txt", "r").read().splitlines()
-
 coordsWithNumbers = []
 grid = []
+gearRatios = []
 partsNumbers = []
-symbols = "!@#$%&*-+=/"
+symbols = "*"
 coords = [
     (-1, -1),# Top-left
     (-1, 0), # Up
@@ -18,6 +18,7 @@ coords = [
 ]
 
 def checkForDigits(r, c):
+    global numOfgears
     for x,y in coords:
         #print(f"checking coords {x},{y}", end=" | ")
         rr,cc =  r+x, c+y
@@ -26,8 +27,10 @@ def checkForDigits(r, c):
         if 0 <= rr < len(grid) and 0 <= cc < len(grid[rr]):
             if (rr,cc) not in coordsWithNumbers:
                 if grid[rr][cc].isdigit():
-                    #print("catch: ",grid[rr][cc])
-                    getNumber(rr,cc) #if a digit is found it trys to collect the whole numbeer
+                    if numOfgears < 2:
+                        numOfgears +=1
+                        #print("catch: ",grid[rr][cc])
+                        getNumber(rr,cc) #if a digit is found it trys to collect the whole number
 
 def getNumber(r,c):
     number = ""
@@ -56,8 +59,13 @@ for r, row in enumerate(data):
     #coordsWithNumbers = []
     for c, char in enumerate(row):
         
-        if char in symbols:
+        if char == "*":
+            partsNumbers = []
+            numOfgears = 0
             #print(f"found {char} in row {r}")
             checkForDigits(r, c) #checks for didgits adjecent or perpendicular to this point
+            if numOfgears == 2:
+                gearRatios.append(partsNumbers[0]*partsNumbers[1]) 
+                
 
-print(sum(partsNumbers))       
+print(sum(gearRatios))       
